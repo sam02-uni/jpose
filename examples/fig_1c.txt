@@ -1,0 +1,31 @@
+class Object { } 
+
+class Void extends Object { } 
+
+class LoopFrame extends Object { 
+  Node n; 
+  int i; 
+} 
+
+class Node extends Object { 
+  int max; 
+  Node next; 
+  bool hasNullWithin(Void foo1) := 
+    let f := new LoopFrame in 
+    let foo2 := (f.n := (this.next)) in 
+    let foo3 := (f.i := 1) in 
+    let fPost := (this.doLoop[f]) in 
+    ((fPost.n) = null); 
+
+  LoopFrame doLoop(LoopFrame f) := 
+    if ((f.n) = null) then f 
+    else if ((this.max) < (f.i)) then f 
+    else 
+      let foo4 := (f.n := ((f.n).next)) in 
+      let foo5 := (f.i := ((f.i) + 1)) in 
+      (this.doLoop[f]); 
+} 
+
+let y := Y0 in 
+let foo6 := (y.max := 4) in 
+(y.hasNullWithin[new Void])

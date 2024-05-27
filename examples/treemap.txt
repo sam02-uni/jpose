@@ -1,0 +1,279 @@
+class Object { }
+
+class Void extends Object { }
+
+class Entry extends Object {
+  int key;
+  Object value;
+  Entry left;
+  Entry right;
+  Entry parent;
+  int color;
+
+  Object setValue(Object value) :=
+    let oldValue := (this.value) in
+    let foo1 := (this.value := value) in
+    oldValue;
+}
+
+class PutParameters extends Object {
+  int k;
+  Object v;
+}
+
+class CompareParameters extends Object {
+  int k1;
+  int k2;
+}
+
+class SetColorParameters extends Object {
+  Entry pp;
+  int cc;
+}
+
+class PutLoopFrame extends Object {
+  int depthPut;
+  int kk;
+  Object vv;
+  Entry tt;
+  Object retVal;
+}
+
+class FixAfterInsertionLoopFrame extends Object {
+  int depthFix;
+  Entry xx;
+}
+
+class TreeMap extends Object {
+  Entry root;
+  int size;
+  int depthBound;
+
+  Object put(PutParameters pPut) :=
+    let red := 0 in
+    let black := 1 in
+    let t := (this.root) in
+    if (t = null) then 
+      let foo1 := (this.incrementSize[new Void]) in
+      let foo2 := (this.root := new Entry) in
+      let foo3 := ((this.root).key := (pPut.k)) in
+      let foo4 := ((this.root).value := (pPut.v)) in
+      let foo5 := ((this.root).color := black) in
+      let foo6 := ((this.root).parent := null) in
+      null
+    else
+      let foo11 := ((this.root).parent := null) in
+      let f := new PutLoopFrame in
+      let foo7 := (f.depthPut := 1) in
+      let foo8 := (f.kk := (pPut.k)) in
+      let foo9 := (f.vv := (pPut.v)) in
+      let foo10 := (f.tt := t) in
+      let fPost := (this.doPutLoop[f]) in
+      (fPost.retVal);
+
+  PutLoopFrame doPutLoop(PutLoopFrame f) :=
+    let red := 0 in
+    let black := 1 in
+    if ((this.depthBound) < (f.depthPut)) then f else
+      let foo0 := (f.depthPut := ((f.depthPut) + 1)) in
+      let pCompare := new CompareParameters in
+      let foo1 := (pCompare.k1 := (f.kk)) in
+      let foo2 := (pCompare.k2 := ((f.tt).key)) in
+      let cmp := (this.compare[pCompare]) in
+      if (cmp = 0) then
+        let foo3 := (f.retVal := ((f.tt).setValue[(f.vv)])) in
+        f
+      else if (cmp = 2) then
+        if (((f.tt).left) = null) then
+          let foo4 := (this.incrementSize[new Void]) in
+	  let par := (f.tt) in
+	  let foo5 := ((f.tt).left := new Entry) in
+	  let foo6 := (((f.tt).left).key := (f.kk)) in
+	  let foo7 := (((f.tt).left).value := (f.vv)) in
+	  let foo8 := (((f.tt).left).color := black) in
+	  let foo9 := (((f.tt).left).parent := par) in
+	  let foo10 := (this.fixAfterInsertion[((f.tt).left)]) in
+	  let foo11 := (f.retVal := null) in
+	  f
+        else
+	  let foo22 := (((f.tt).left).parent := (f.tt)) in
+          let foo12 := (f.tt := ((f.tt).left)) in
+	  (this.doPutLoop[f])
+      else
+        if (((f.tt).right) = null) then
+          let foo13 := (this.incrementSize[new Void]) in
+	  let par := (f.tt) in
+	  let foo14 := ((f.tt).right := new Entry) in
+	  let foo15 := (((f.tt).right).key := (f.kk)) in
+	  let foo16 := (((f.tt).right).value := (f.vv)) in
+	  let foo17 := (((f.tt).right).color := black) in
+	  let foo18 := (((f.tt).right).parent := par) in
+	  let foo19 := (this.fixAfterInsertion[((f.tt).right)]) in
+	  let foo20 := (f.retVal := null) in
+	  f
+        else
+	  let foo23 := (((f.tt).right).parent := (f.tt)) in	  
+          let foo21 := (f.tt := ((f.tt).right)) in
+	  (this.doPutLoop[f]);
+
+  Void incrementSize(Void foo) :=
+    let foo := (this.size := ((this.size) + 1)) in
+    new Void;
+
+  int compare(CompareParameters pCompare) :=
+    if ((pCompare.k1) < (pCompare.k2)) then 2
+    else if ((pCompare.k1) = (pCompare.k2)) then 0
+    else 1;
+
+  Entry parentOf(Entry p) :=
+    if (p = null) then null else (p.parent);
+
+  Entry leftOf(Entry p) :=
+    if (p = null) then null else (p.left);
+
+  Entry rightOf(Entry p) :=
+    if (p = null) then null else (p.right);
+
+  int colorOf(Entry p) :=
+    if (p = null) then 1 else (p.color);
+
+  Void setColor(SetColorParameters pSetColor) :=
+    if ((pSetColor.pp) = null) then new Void
+    else let foo := ((pSetColor.pp).color := (pSetColor.cc)) in new Void;
+
+  Void fixAfterInsertion(Entry x) :=
+    let red := 0 in
+    let black := 1 in
+    let foo1 := (x.color := red) in
+    let f := new FixAfterInsertionLoopFrame in
+    let foo2 := (f.depthFix := 1) in
+    let foo3 := (f.xx := x) in
+    let foo4 := (this.doFixAfterInsertionLoop[f]) in
+    let foo5 := ((this.root).color := black) in
+    new Void;
+
+  FixAfterInsertionLoopFrame doFixAfterInsertionLoop(FixAfterInsertionLoopFrame f) :=
+    let red := 0 in
+    let black := 1 in
+    if ((this.depthBound) < (f.depthFix)) then f else
+      let foo0 := (f.depthFix := ((f.depthFix) + 1)) in
+      if ((f.xx) = null) then f
+      else if ((f.xx) = (this.root)) then f
+      else if ((((f.xx).parent).color) = black) then f
+      else if ((this.parentOf[(f.xx)]) = (this.leftOf[(this.parentOf[(this.parentOf[(f.xx)])])])) then
+        let y := (this.rightOf[(this.parentOf[(this.parentOf[(f.xx)])])]) in
+        if ((this.colorOf[y]) = red) then
+          let pSetColor := new SetColorParameters in
+	  let foo1 := (pSetColor.pp := (this.parentOf[(f.xx)])) in
+	  let foo2 := (pSetColor.cc := black) in
+	  let foo3 := (this.setColor[pSetColor]) in
+	  let foo4 := (pSetColor.pp := y) in
+	  let foo5 := (this.setColor[pSetColor]) in
+	  let foo6 := (pSetColor.pp := (this.parentOf[(this.parentOf[(f.xx)])])) in
+	  let foo7 := (pSetColor.cc := red) in
+	  let foo8 := (this.setColor[pSetColor]) in
+	  let foo9 := (f.xx := (this.parentOf[(this.parentOf[(f.xx)])])) in
+	  (this.doFixAfterInsertionLoop[f])
+        else if ((f.xx) = (this.rightOf[(this.parentOf[(f.xx)])])) then
+          let foo10 := (f.xx := (this.parentOf[(f.xx)])) in
+	  let foo11 := (this.rotateLeft[(f.xx)]) in
+          let pSetColor := new SetColorParameters in
+	  let foo12 := (pSetColor.pp := (this.parentOf[(f.xx)])) in
+	  let foo13 := (pSetColor.cc := black) in
+	  let foo14 := (this.setColor[pSetColor]) in
+	  let foo15 := (pSetColor.pp := (this.parentOf[(this.parentOf[(f.xx)])])) in
+	  let foo16 := (pSetColor.cc := red) in
+	  let foo17 := (this.setColor[pSetColor]) in
+	  if ((this.parentOf[(this.parentOf[(f.xx)])]) = null) then
+	    (this.doFixAfterInsertionLoop[f])
+	  else
+	    let foo18 := (this.rotateRight[(this.parentOf[(this.parentOf[(f.xx)])])]) in
+	    (this.doFixAfterInsertionLoop[f])
+        else
+          let pSetColor := new SetColorParameters in
+	  let foo19 := (pSetColor.pp := (this.parentOf[(f.xx)])) in
+	  let foo20 := (pSetColor.cc := black) in
+	  let foo21 := (this.setColor[pSetColor]) in
+	  let foo22 := (pSetColor.pp := (this.parentOf[(this.parentOf[(f.xx)])])) in
+	  let foo23 := (pSetColor.cc := red) in
+	  let foo24 := (this.setColor[pSetColor]) in
+	  if ((this.parentOf[(this.parentOf[(f.xx)])]) = null) then
+	    (this.doFixAfterInsertionLoop[f])
+	  else
+	    let foo25 := (this.rotateRight[(this.parentOf[(this.parentOf[(f.xx)])])]) in
+	    (this.doFixAfterInsertionLoop[f])
+      else
+        let y := (this.leftOf[(this.parentOf[(this.parentOf[(f.xx)])])]) in
+        if ((this.colorOf[y]) = red) then
+          let pSetColor := new SetColorParameters in
+	  let foo26 := (pSetColor.pp := (this.parentOf[(f.xx)])) in
+	  let foo27 := (pSetColor.cc := black) in
+	  let foo28 := (this.setColor[pSetColor]) in
+	  let foo29 := (pSetColor.pp := y) in
+	  let foo30 := (this.setColor[pSetColor]) in
+	  let foo31 := (pSetColor.pp := (this.parentOf[(this.parentOf[(f.xx)])])) in
+	  let foo32 := (pSetColor.cc := red) in
+	  let foo33 := (this.setColor[pSetColor]) in
+	  let foo34 := (f.xx := (this.parentOf[(this.parentOf[(f.xx)])])) in
+	  (this.doFixAfterInsertionLoop[f])
+        else if ((f.xx) = (this.leftOf[(this.parentOf[(f.xx)])])) then
+          let foo35 := (f.xx := (this.parentOf[(f.xx)])) in
+	  let foo36 := (this.rotateRight[(f.xx)]) in
+          let pSetColor := new SetColorParameters in
+	  let foo37 := (pSetColor.pp := (this.parentOf[(f.xx)])) in
+	  let foo38 := (pSetColor.cc := black) in
+	  let foo39 := (this.setColor[pSetColor]) in
+	  let foo40 := (pSetColor.pp := (this.parentOf[(this.parentOf[(f.xx)])])) in
+	  let foo41 := (pSetColor.cc := red) in
+	  let foo42 := (this.setColor[pSetColor]) in
+	  if ((this.parentOf[(this.parentOf[(f.xx)])]) = null) then
+	    (this.doFixAfterInsertionLoop[f])
+	  else
+	    let foo43 := (this.rotateLeft[(this.parentOf[(this.parentOf[(f.xx)])])]) in
+	    (this.doFixAfterInsertionLoop[f])
+        else
+          let pSetColor := new SetColorParameters in
+	  let foo44 := (pSetColor.pp := (this.parentOf[(f.xx)])) in
+	  let foo45 := (pSetColor.cc := black) in
+	  let foo46 := (this.setColor[pSetColor]) in
+	  let foo47 := (pSetColor.pp := (this.parentOf[(this.parentOf[(f.xx)])])) in
+	  let foo48 := (pSetColor.cc := red) in
+	  let foo49 := (this.setColor[pSetColor]) in
+	  if ((this.parentOf[(this.parentOf[(f.xx)])]) = null) then
+	    (this.doFixAfterInsertionLoop[f])
+	  else
+	    let foo50 := (this.rotateLeft[(this.parentOf[(this.parentOf[(f.xx)])])]) in
+	    (this.doFixAfterInsertionLoop[f]);
+
+  Void rotateLeft(Entry p) :=
+    let r := (p.right) in
+    let foo1 := (p.right := (r.left)) in
+    let foo2 := if ((r.left) = null) then null else
+      let foo3 := ((r.left).parent := p) in null in
+    let foo4 := (r.parent := (p.parent)) in
+    let foo5 := if ((p.parent) = null) then
+      let foo6 := (this.root := r) in null
+    else if (((p.parent).left) = p) then
+      let foo7 := ((p.parent).left := r) in null
+    else
+      let foo8 := ((p.parent).right := r) in null in
+    let foo9 := (r.left := p) in
+    let foo10 := (p.parent := r) in
+    new Void;
+
+  Void rotateRight(Entry p) :=
+    let l := (p.left) in
+    let foo1 := (p.left := (l.right)) in
+    let foo2 := if ((l.right) = null) then null else
+      let foo3 := ((l.right).parent := p) in null in
+    let foo4 := (l.parent := (p.parent)) in
+    let foo5 := if ((p.parent) = null) then
+      let foo6 := (this.root := l) in null
+    else if (((p.parent).right) = p) then
+      let foo7 := ((p.parent).right := l) in null
+    else
+      let foo8 := ((p.parent).left := l) in null in
+    let foo9 := (l.right := p) in
+    let foo10 := (p.parent := l) in
+    new Void;
+}

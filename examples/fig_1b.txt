@@ -1,0 +1,19 @@
+class Object { } 
+
+class Void extends Object { } 
+
+class Node extends Object {
+  int val;
+  Node c0;
+  Node c1;
+  Node c2;
+
+  int sum(Void foo) := 
+    let s1 := (this.val) in 
+    let s2 := (s1 + ((this.c0).val)) in 
+    let s3 := (s2 + ((this.c1).val)) in 
+    let s4 := (s3 + ((this.c2).val)) in 
+    s4; 
+} 
+
+let y := Y0 in (y.sum[new Void])

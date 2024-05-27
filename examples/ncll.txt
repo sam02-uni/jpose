@@ -1,0 +1,72 @@
+class Object { }
+
+class Void extends Object { }
+
+class AddNodeBeforeParameters extends Object {
+  LinkedListNode node;
+  Object val;
+}
+
+class AddNodeParameters extends Object {
+  LinkedListNode nodeToInsert;
+  LinkedListNode insertBeforeNode;
+}
+
+class LinkedListNode extends Object {
+  LinkedListNode previous;
+  LinkedListNode next;
+  Object value;
+}
+
+class NodeCachingLinkedList extends Object {
+  LinkedListNode header;
+  int size;
+  LinkedListNode firstCachedNode;
+  int cacheSize;
+
+  Void add(Object value) :=
+    (this.addLast[value]);
+
+  Void addLast(Object o) :=
+    let pAddNodeBefore := new AddNodeBeforeParameters in
+    let foo1 := (pAddNodeBefore.node := (this.header)) in
+    let foo2 := (pAddNodeBefore.val := o) in
+    (this.addNodeBefore[pAddNodeBefore]);
+
+  Void addNodeBefore(AddNodeBeforeParameters pAddNodeBefore) :=
+    let newNode := (this.createNode[(pAddNodeBefore.val)]) in
+    let pAddNode := new AddNodeParameters in
+    let foo3 := (pAddNode.nodeToInsert := newNode) in
+    let foo4 := (pAddNode.insertBeforeNode := (pAddNodeBefore.node)) in
+    (this.addNode[pAddNode]);
+
+  Void addNode(AddNodeParameters pAddNode) :=
+    let foo5 := ((pAddNode.nodeToInsert).next := (pAddNode.insertBeforeNode)) in
+    let foo6 := ((pAddNode.nodeToInsert).previous := ((pAddNode.insertBeforeNode).previous)) in
+    let foo7 := (((pAddNode.insertBeforeNode).previous).next := (pAddNode.nodeToInsert)) in
+    let foo8 := ((pAddNode.insertBeforeNode).previous := (pAddNode.nodeToInsert)) in
+    let foo9 := (this.size := ((this.size) + 1)) in
+    null;
+    
+  LinkedListNode createNode(Object value) :=
+    let cachedNode := (this.getNodeFromCache[null]) in
+    if (cachedNode = null) then
+      (this.superCreateNode[value])
+    else
+      let foo10 := (cachedNode.value := value) in
+      cachedNode;
+
+  LinkedListNode getNodeFromCache(Void v) :=
+    if ((this.cacheSize) = 0) then null
+    else
+      let cachedNode := (this.firstCachedNode) in
+      let foo11 := (this.firstCachedNode := (cachedNode.next)) in
+      let foo12 := (cachedNode.next := null) in
+      let foo13 := (this.cacheSize := ((this.cacheSize) - 1)) in
+      cachedNode;
+
+  LinkedListNode superCreateNode(Object value) :=
+    let n := new LinkedListNode in
+    let foo14 := (n.value := value) in
+    n;
+}

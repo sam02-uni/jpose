@@ -1,0 +1,20 @@
+class Object { } 
+
+class Void extends Object { } 
+
+class Container extends Object {
+  Object data;
+
+  Void swap(Container c) := 
+    if (c = null) then new Void 
+    else 
+      let e := (this.data) in 
+      let foo := (this.data := (c.data)) in 
+      let baz := (c.data := e) in 
+      new Void; 
+} 
+
+let y0 := Y0 in 
+let y1 := Y1 in 
+(y0.swap[y1])
+
