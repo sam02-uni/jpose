@@ -1,0 +1,253 @@
+package jpose;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import jpose.parser.ParseResult;
+import jpose.parser.ParserProgram;
+import jpose.prettyprinter.PrettyPrinter;
+import jpose.semantics.interpreter.Interpreter;
+import jpose.semantics.types.SemConfiguration;
+import jpose.smt.SmtPrinter;
+import jpose.smt.SmtSolver;
+import jpose.smt.SmtSolverPlain;
+import jpose.smt.SmtSolverUnwind;
+import jpose.syntax.SyProgram;
+
+public final class Main {
+	private static enum ToPrint { CONFIGS, COUNT, SMT, STATS }
+	
+	private static String filenameSrc = "";
+	private static String z3 = "/usr/local/bin/z3";
+	private static SmtSolver z3Solver = null;
+
+	public static void main(String[] args) {
+		int depth = 0;
+		boolean prune = false;
+		boolean leaves = false;
+		ToPrint toPrint = ToPrint.CONFIGS;
+		boolean nextZ3 = false;
+		boolean nextDepth = false;
+		boolean help = false;
+		boolean unwind = false;
+		
+		for (int i = 0; i < args.length; ++i) {
+			if (nextZ3) {
+				z3 = args[i];
+				nextZ3 = false;
+			} else if (nextDepth) {
+				depth = Integer.parseInt(args[i]);
+				nextDepth = false;
+			} else if ("-z3".equals(args[i])) {
+				nextZ3 = true;
+			} else if ("-c".equals(args[i])) {
+				toPrint = ToPrint.COUNT;
+			} else if ("-s".equals(args[i])) {
+				toPrint = ToPrint.SMT;
+			} else if ("-t".equals(args[i])) {
+				toPrint = ToPrint.STATS;
+			} else if ("-p".equals(args[i])) {
+				prune = true;
+			} else if ("-l".equals(args[i])) {
+				leaves = true;
+			} else if ("-u".equals(args[i])) {
+				unwind = true;
+			} else if ("-h".equals(args[i])) {
+				help = true;
+			} else {
+				filenameSrc = args[i];
+				nextDepth = true;
+			}
+		}
+		
+		if (help) {
+			System.out.println("Usage: java -jar <pose_jar> [-c|-s] [-l] [-p] [-z <z3_path>] source depth");
+			System.out.println("  -c: prints count of configs");
+			System.out.println("  -s: prints smtlib of path condition");
+			System.out.println("  -t: prints time statistics of Z3 queries");
+			System.out.println("  -l: considers leaves instead of configs at depth");
+			System.out.println("  -p: prunes infeasible with Z3");
+			System.out.println("  -z <z3_path>: specifies the path of the Z3 executable (default: /usr/local/bin/z3)");		
+			System.out.println("  -u: unwinds ites");
+		} else {
+			if (prune) {
+				z3Solver = (unwind ? new SmtSolverUnwind(Paths.get(z3)) : new SmtSolverPlain(Paths.get(z3)));
+			}
+			if (leaves) {
+				switch (toPrint) {
+				case CONFIGS: 
+					leavesConfigsAt(depth);
+					break;
+				case COUNT:
+					leavesCountAt(depth);
+					break;
+				case SMT:
+					leavesSmtAt(depth);
+					break;
+				case STATS:
+					leavesStatsAt(depth);
+					break;
+				}
+			} else {
+				switch (toPrint) {
+				case CONFIGS: 
+					configsAt(depth);
+					break;
+				case COUNT:
+					countAt(depth);
+					break;
+				case SMT:
+					smtAt(depth);
+					break;
+				case STATS:
+					statsAt(depth);
+					break;
+				}
+			}
+		}
+	}
+
+	private static ParseResult<SyProgram> readAndParseFile() {
+		String src;
+		try {
+			src = Files.readString(Path.of(filenameSrc));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		if (src.startsWith("include")) {
+			final String filenameInclude = src.substring(8, src.indexOf('\n'));
+			try {
+				src = Files.readString(Path.of(filenameInclude)) + src.substring(src.indexOf('\n') + 1);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		final ParserProgram p = new ParserProgram();
+		return p.parse(src);
+	}
+	
+	private static void leavesConfigsAt(int depth) {
+		final ParseResult<SyProgram> r = readAndParseFile();
+		if (r.parsed().isPresent()) {
+			final SyProgram prg = r.parsed().get();
+			final Interpreter intp = new Interpreter();
+			final List<SemConfiguration> Js;
+			Js = intp.leavesAtPrune(prg, depth, z3Solver);
+			final PrettyPrinter pp = new PrettyPrinter();
+			for (var J : Js) {
+				System.out.println(pp.configToString(J));
+				System.out.println("\n=========\n");
+			}
+		} else {
+			System.out.println("parsing error");
+		}
+	}
+	
+	private static void leavesCountAt(int depth) {
+		final ParseResult<SyProgram> r = readAndParseFile();
+		if (r.parsed().isPresent()) {
+			final SyProgram prg = r.parsed().get();
+			final Interpreter intp = new Interpreter();
+			final List<SemConfiguration> Js;
+			Js = intp.leavesAtPrune(prg, depth, z3Solver);
+			System.out.println(Js.size());
+		} else {
+			System.out.println("parsing error");
+		}
+	}
+	
+	private static void leavesSmtAt(int depth) {
+		final ParseResult<SyProgram> r = readAndParseFile();
+		if (r.parsed().isPresent()) {
+			final SyProgram prg = r.parsed().get();
+			final Interpreter intp = new Interpreter();
+			final List<SemConfiguration> Js;
+			Js = intp.leavesAtPrune(prg, depth, z3Solver);
+			final SmtPrinter smtp = new SmtPrinter();
+			for (var J : Js) {
+				System.out.println(smtp.configToSmt(J));
+				System.out.println("\n=========\n");
+			}
+		} else {
+			System.out.println("parsing error");
+		}
+	}
+	
+	private static void leavesStatsAt(int depth) {
+		final ParseResult<SyProgram> r = readAndParseFile();
+		if (r.parsed().isPresent()) {
+			final SyProgram prg = r.parsed().get();
+			final Interpreter intp = new Interpreter();
+			intp.leavesAtPrune(prg, depth, z3Solver);
+			printStats();
+		} else {
+			System.out.println("parsing error");
+		}
+	}
+	
+	private static void configsAt(int depth) {
+		final ParseResult<SyProgram> r = readAndParseFile();
+		if (r.parsed().isPresent()) {
+			final SyProgram prg = r.parsed().get();
+			final Interpreter intp = new Interpreter();
+			final List<SemConfiguration> Js;
+			Js = intp.stepAtPrune(prg, depth, z3Solver);
+			final PrettyPrinter pp = new PrettyPrinter();
+			for (var J : Js) {
+				System.out.println(pp.configToString(J));
+				System.out.println("\n=========\n");
+			}
+		} else {
+			System.out.println("parsing error");
+		}
+	}
+	
+	private static void countAt(int depth) {
+		final ParseResult<SyProgram> r = readAndParseFile();
+		if (r.parsed().isPresent()) {
+			final SyProgram prg = r.parsed().get();
+			final Interpreter intp = new Interpreter();
+			final List<SemConfiguration> Js;
+			Js = intp.stepAtPrune(prg, depth, z3Solver);
+			System.out.println(Js.size());
+		} else {
+			System.out.println("parsing error");
+		}
+	}
+	
+	private static void smtAt(int depth) {
+		final ParseResult<SyProgram> r = readAndParseFile();
+		if (r.parsed().isPresent()) {
+			final SyProgram prg = r.parsed().get();
+			final Interpreter intp = new Interpreter();
+			final List<SemConfiguration> Js;
+			Js = intp.stepAtPrune(prg, depth, z3Solver);
+			final SmtPrinter smtp = new SmtPrinter();
+			for (var J : Js) {
+				System.out.println(smtp.configToSmt(J));
+				System.out.println("\n=========\n");
+			}
+		} else {
+			System.out.println("parsing error");
+		}
+	}
+	
+	private static void statsAt(int depth) {
+		final ParseResult<SyProgram> r = readAndParseFile();
+		if (r.parsed().isPresent()) {
+			final SyProgram prg = r.parsed().get();
+			final Interpreter intp = new Interpreter();
+			intp.stepAtPrune(prg, depth, z3Solver);
+			printStats();
+		} else {
+			System.out.println("parsing error");
+		}
+	}
+	
+	private static void printStats() {
+		System.out.println("Spent " + (z3Solver == null ? 0.0 : (((float) z3Solver.totalSolverTimeMillis()) / 1000)) + " seconds in " + (z3Solver == null ? 0L : z3Solver.totalNumberOfQueries()) + " Z3 queries, " + (z3Solver == null ? 0L : z3Solver.totalNumberOfQueriesSat()) + " Z3 sat queries");
+	}
+}
