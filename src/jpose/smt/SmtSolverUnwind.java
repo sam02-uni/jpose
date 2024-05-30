@@ -2,6 +2,7 @@ package jpose.smt;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,16 +28,20 @@ import jpose.syntax.SyValueSub;
 public final class SmtSolverUnwind implements SmtSolver {
 	private final SmtSolverPlain smtSolver;
 	private final TrieClause cacheUnsat;
+	private final boolean doNotUseOptimizations;
+	private final boolean doNotUnwind;
 	
-	public SmtSolverUnwind(Path solverPath) {
+	public SmtSolverUnwind(Path solverPath, boolean doNotUseOptimizations, boolean doNotUnwind) {
 		this.smtSolver = new SmtSolverPlain(solverPath);
 		this.cacheUnsat = new TrieClause();
+		this.doNotUseOptimizations = doNotUseOptimizations;
+		this.doNotUnwind = doNotUnwind;
 	}
 	
 	@Override
 	public boolean querySat(SemConfiguration J) {
 		var P = J.syProgramLit();
-		var pcs = unwindPathCondition(J.pathCondition());
+		var pcs = possiblyUnwindPathCondition(J.pathCondition());
 		for (var pc : pcs) {
 			var sat = surelyUnsat(pc) ? false : this.smtSolver.querySat(P, pc);
 			if (sat) {
@@ -64,8 +69,8 @@ public final class SmtSolverUnwind implements SmtSolver {
 		return this.smtSolver.totalNumberOfQueriesSat();
 	}
 	
-	private Iterable<List<SyValue>> unwindPathCondition(List<SyValue> pathCondition) {
-		final Iterable<List<SyValue>> retVal = unwindPathConditionBDD(pathCondition);
+	private Iterable<List<SyValue>> possiblyUnwindPathCondition(List<SyValue> pathCondition) {
+		final Iterable<List<SyValue>> retVal = possiblyUnwindPathConditionBDD(pathCondition);
 		return retVal;
 	}
 	
@@ -237,13 +242,21 @@ public final class SmtSolverUnwind implements SmtSolver {
 		}
 	}
 	
-	private Iterable<List<SyValue>> unwindPathConditionBDD(List<SyValue> pathCondition) {
+	private Iterable<List<SyValue>> possiblyUnwindPathConditionBDD(List<SyValue> pathCondition) {
 		var pcConverted = convertItes(pathCondition);		
 		var pcs = new PathConditionScanner();
 		for (var c : pcConverted) {
 			pcs.conjoinPredicate(c);
 		}
-		return pcs.iterable();
+		if (this.doNotUnwind) {
+			if (pcs.iterable().iterator().hasNext()) {
+				return List.of(pathCondition);
+			} else {
+				return Collections.emptyList();
+			}
+		} else {
+			return pcs.iterable();
+		}
 	}
 	
 	private List<SyValue> convertItes(List<SyValue> pc) {
@@ -738,6 +751,9 @@ public final class SmtSolverUnwind implements SmtSolver {
 	}
 	
 	private boolean surelyUnsat(List<SyValue> pc) {
+		if (this.doNotUseOptimizations) {
+			return false;
+		}
 		if (cachedPrefix(pc)) {
 			return true;
 		}

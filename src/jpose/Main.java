@@ -74,7 +74,7 @@ public final class Main {
 			System.out.println("  -u: unwinds ites");
 		} else {
 			if (prune) {
-				z3Solver = (unwind ? new SmtSolverUnwind(Paths.get(z3)) : new SmtSolverPlain(Paths.get(z3)));
+				z3Solver = new SmtSolverUnwind(Paths.get(z3), true, !unwind);
 			}
 			if (leaves) {
 				switch (toPrint) {
