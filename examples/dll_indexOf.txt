@@ -1,0 +1,6 @@
+include dll.txt
+
+let l := Y0 in
+let o := Y1 in
+let foo1 := (l.depthBound := 8) in
+(l.indexOf[o])

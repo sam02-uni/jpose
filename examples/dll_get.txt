@@ -1,0 +1,5 @@
+include dll.txt
+
+let l := Y0 in
+let i := 4 in
+(l.get[i])

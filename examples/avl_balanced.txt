@@ -1,0 +1,5 @@
+include avl.txt
+
+let t := Y0 in
+let foo54 := (t.depthBound := 1) in
+(t.balanced[null])

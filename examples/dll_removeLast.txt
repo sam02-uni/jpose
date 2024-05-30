@@ -1,0 +1,4 @@
+include dll.txt
+
+let l := Y0 in
+(l.removeLast[null])
