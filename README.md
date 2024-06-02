@@ -1,6 +1,6 @@
 # jPOSE: Path-Optimal Symbolic Execution, in Java.
 
-This repository contains a prototype implementation of path-optimal symbolic execution. To compile and run it you need Java (at least version 21), and [Z3](https://github.com/Z3Prover/z3). The code comes with an [Eclipse IDE](https://eclipseide.org/) project, so the easiest way to build it is to import the project under the Eclipse IDE and let the IDE do its thing. Unfortunately the current Eclipse compiler, which is used by the Eclipse IDE to build all the Java source files, contains a bug that causes the code to be incorrectly compiled: The project will build, but running the application will raise an exception at runtime. To circumvent the bug you need to compile the jpose.semantics.interpreter.Interpreter class with a different compiler, e.g. the javac compiler that comes with the JDK. My routine is the following: supposing you have cloned the repository in /home/myself/git/jpose, then:
+This repository contains a prototype implementation of path-optimal symbolic execution. To compile and run it you need Java (at least version 21), and [Z3](https://github.com/Z3Prover/z3). The code comes with an [Eclipse IDE](https://eclipseide.org/) project, so the easiest way to build it is to import the project under the Eclipse IDE and let the IDE do its thing. Unfortunately the current Eclipse compiler, which is used by the Eclipse IDE to build all the Java source files, contains a bug that causes the code to be incorrectly compiled: The project will build, but running the application will raise a java.lang.VerifyException or a java.lang.MatchException at runtime. To circumvent the bug you need to compile the jpose.semantics.interpreter.Interpreter class with a different compiler, e.g. the javac compiler that comes with the JDK. My routine is the following: supposing you have cloned the repository in /home/myself/git/jpose, then:
 
     $ cd /home/myself/git/jpose/src
     $ javac --module-path . -g jpose/semantics/interpreter/Interpreter.java
@@ -10,15 +10,15 @@ Whenever you modify a Java source file the Eclipse compiler might recompile the 
 
 To run the code, use a command line as follows:
 
-    $ java --module-path /home/myself/git/jpose/bin jpose.Main ...
+    $ java --module-path /home/myself/git/jpose/bin:/home/myself/git/jpose/lib -m jpose/jpose.Main ...
     
 The program has a sketchy help that you can read by issuing the command
 
-    $ java --module-path /home/myself/git/jpose/bin jpose.Main -h
+    $ java --module-path /home/myself/git/jpose/bin:/home/myself/git/jpose/lib -m jpose/jpose.Main -h
 
 A possible execution of the tool is
 
-    $ java --module-path /home/myself/git/jpose/bin jpose.Main -p -z3 /usr/bin/z3 dll_add.txt 100
+    $ java --module-path /home/myself/git/jpose/bin:/home/myself/git/jpose/lib -m jpose/jpose.Main -p -z3 /usr/bin/z3 dll_add.txt 100
 
 It runs the dll.txt example up to depth 100, by pruning the infeasible states using Z3 (option -p), where the Z3 executable is installed at /usr/bin (option -z3). The run will print the configurations (current program, heap, path condition and expression under evaluation) reached after 100 execution steps.
 
