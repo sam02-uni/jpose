@@ -31,6 +31,11 @@ class FindParameters extends Object {
   AvlNode arg1;
 }
 
+class FindMParameters extends Object {
+  int depth4;
+  AvlNode arg2;
+}
+
 class AvlTree extends Object {
   AvlNode root;
   int depthBound;
@@ -141,21 +146,35 @@ class AvlTree extends Object {
     let foo47 := (k1.right := (this.rotateWithLeftChild[(k1.right)])) in
     (this.rotateWithRightChild[k1]);
 
-  AvlNode findMaxNode(AvlNode t) :=
-  if (t = null) then t else
-  if ((t.right) = null) then t else
-  (this.findMaxNode[(t.right)]);
+  AvlNode findMaxNode(FindMParameters p) :=
+  if ((this.depthBound) < (p.depth4)) then null else
+  if ((p.arg2) = null) then (p.arg2) else
+  if (((p.arg2).right) = null) then (p.arg2) else
+  let p2 := new FindMParameters in
+  let foo1 := (p2.depth4 := ((p.depth4) + 1)) in
+  let foo2 := (p2.arg2 := ((p.arg2).right)) in
+  (this.findMaxNode[p2]);
 
-  AvlNode findMinNode(AvlNode t) :=
-  if (t = null) then t else
-  if ((t.left) = null) then t else
-  (this.findMinNode[(t.left)]);
+  AvlNode findMinNode(FindMParameters p) :=
+  if ((this.depthBound) < (p.depth4)) then null else
+  if ((p.arg2) = null) then (p.arg2) else
+  if (((p.arg2).left) = null) then (p.arg2) else
+  let p2 := new FindMParameters in
+  let foo1 := (p2.depth4 := ((p.depth4) + 1)) in
+  let foo2 := (p2.arg2 := ((p.arg2).left)) in
+  (this.findMinNode[p2]);
   
   int findMax(Void v) :=
-  (this.elementAt[(this.findMaxNode[(this.root)])]);
+  let p := new FindMParameters in
+  let foo1 := (p.depth4 := 0) in
+  let foo2 := (p.arg2 := (this.root)) in
+  (this.elementAt[(this.findMaxNode[p])]);
   
   int findMin(Void v) :=
-  (this.elementAt[(this.findMinNode[(this.root)])]);  
+  let p := new FindMParameters in
+  let foo1 := (p.depth4 := 0) in
+  let foo2 := (p.arg2 := (this.root)) in
+  (this.elementAt[(this.findMinNode[p])]);  
 
   boolean balancedNode(BalancedNodeParameters p) :=
   if ((this.depthBound) < (p.depth2)) then true else

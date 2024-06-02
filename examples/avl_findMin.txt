@@ -1,5 +1,5 @@
 include avl.txt
 
 let t := Y0 in
-let foo54 := (t.depthBound := 1) in
+let foo54 := (t.depthBound := 10) in
 (t.findMin[null])
