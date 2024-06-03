@@ -49,8 +49,7 @@ class AvlTree extends Object {
     null;
 
   AvlNode insert(InsertParameters pInsert) :=
-    if ((this.depthBound) < (pInsert.depth)) then null
-    else if ((pInsert.arg) = null) then
+    if ((pInsert.arg) = null) then
       let t := new AvlNode in
       let foo4 := (t.element := (pInsert.x)) in
       let foo5 := (t.left := null) in
@@ -60,51 +59,65 @@ class AvlTree extends Object {
       let foo8 := (pMax.rhs := (this.height[(t.right)])) in
       let foo9 := (t.height := ((this.max[pMax]) + 1)) in
       t
+    else if ((this.depthBound) < (pInsert.depth)) then
+      let t := (pInsert.arg) in
+      let pMax := new MaxParameters in
+      let foo10 := (pMax.lhs := (this.height[(t.left)])) in
+      let foo11 := (pMax.rhs := (this.height[(t.right)])) in
+      let foo12 := (t.height := ((this.max[pMax]) + 1)) in
+      t
     else if ((pInsert.x) < ((pInsert.arg).element)) then
       let t := (pInsert.arg) in
       let pInsertLeft := new InsertParameters in
-      let foo10 := (pInsertLeft.depth := ((pInsert.depth) + 1)) in
-      let foo11 := (pInsertLeft.x := (pInsert.x)) in
-      let foo12 := (pInsertLeft.arg := (t.left)) in
-      let foo13 := (t.left := (this.insert[pInsertLeft])) in
+      let foo13 := (pInsertLeft.depth := ((pInsert.depth) + 1)) in
+      let foo14 := (pInsertLeft.x := (pInsert.x)) in
+      let foo15 := (pInsertLeft.arg := (t.left)) in
+      let foo16 := (t.left := (this.insert[pInsertLeft])) in
       if (((this.height[(t.left)]) - (this.height[(t.right)])) = 2) then
         let t2 := if ((pInsert.x) < ((t.left).element)) then
-	  (this.rotateWithLeftChild[t])
-	else
-	  (this.doubleWithLeftChild[t]) in
+          (this.rotateWithLeftChild[t])
+        else if (~(((t.left).right) = null)) then
+          (this.doubleWithLeftChild[t]) else t in
         let pMax := new MaxParameters in
-        let foo14 := (pMax.lhs := (this.height[(t2.left)])) in
-        let foo15 := (pMax.rhs := (this.height[(t2.right)])) in
-        let foo16 := (t2.height := ((this.max[pMax]) + 1)) in
+        let foo17 := (pMax.lhs := (this.height[(t2.left)])) in
+        let foo18 := (pMax.rhs := (this.height[(t2.right)])) in
+        let foo19 := (t2.height := ((this.max[pMax]) + 1)) in
         t2
       else let pMax := new MaxParameters in
-      let foo17 := (pMax.lhs := (this.height[(t.left)])) in
-      let foo18 := (pMax.rhs := (this.height[(t.right)])) in
-      let foo19 := (t.height := ((this.max[pMax]) + 1)) in
+      let foo20 := (pMax.lhs := (this.height[(t.left)])) in
+      let foo21 := (pMax.rhs := (this.height[(t.right)])) in
+      let foo22 := (t.height := ((this.max[pMax]) + 1)) in
       t
     else if (((pInsert.arg).element) < (pInsert.x)) then
       let t := (pInsert.arg) in
       let pInsertRight := new InsertParameters in
-      let foo20 := (pInsertRight.depth := ((pInsert.depth) + 1)) in
-      let foo21 := (pInsertRight.x := (pInsert.x)) in
-      let foo22 := (pInsertRight.arg := (t.right)) in
-      let foo23 := (t.right := (this.insert[pInsertRight])) in
+      let foo23 := (pInsertRight.depth := ((pInsert.depth) + 1)) in
+      let foo24 := (pInsertRight.x := (pInsert.x)) in
+      let foo25 := (pInsertRight.arg := (t.right)) in
+      let foo26 := (t.right := (this.insert[pInsertRight])) in
       if (((this.height[(t.right)]) - (this.height[(t.left)])) = 2) then
         let t2 := if (((t.right).element) < (pInsert.x)) then
-	  (this.rotateWithRightChild[t])
-	else
-	  (this.doubleWithRightChild[t]) in
+          (this.rotateWithRightChild[t])
+        else if (~(((t.right).left) = null)) then
+          (this.doubleWithRightChild[t]) else t in
         let pMax := new MaxParameters in
-        let foo24 := (pMax.lhs := (this.height[(t2.left)])) in
-        let foo25 := (pMax.rhs := (this.height[(t2.right)])) in
-        let foo26 := (t2.height := ((this.max[pMax]) + 1)) in
+        let foo27 := (pMax.lhs := (this.height[(t2.left)])) in
+        let foo28 := (pMax.rhs := (this.height[(t2.right)])) in
+        let foo29 := (t2.height := ((this.max[pMax]) + 1)) in
         t2
       else let pMax := new MaxParameters in
-      let foo27 := (pMax.lhs := (this.height[(t.left)])) in
-      let foo28 := (pMax.rhs := (this.height[(t.right)])) in
-      let foo29 := (t.height := ((this.max[pMax]) + 1)) in
+      let foo30 := (pMax.lhs := (this.height[(t.left)])) in
+      let foo31 := (pMax.rhs := (this.height[(t.right)])) in
+      let foo32 := (t.height := ((this.max[pMax]) + 1)) in
       t
-    else t;
+    else
+      let t := (pInsert.arg) in
+      let pMax := new MaxParameters in
+      let foo33 := (pMax.lhs := (this.height[(t.left)])) in
+      let foo34 := (pMax.rhs := (this.height[(t.right)])) in
+      let foo35 := (t.height := ((this.max[pMax]) + 1)) in
+      t;
+    
 
   int max(MaxParameters pMax) :=
     if ((pMax.lhs) < (pMax.rhs)) then (pMax.rhs) else (pMax.lhs);
