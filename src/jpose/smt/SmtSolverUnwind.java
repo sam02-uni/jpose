@@ -286,7 +286,7 @@ public final class SmtSolverUnwind implements SmtSolver {
 			var arg2 = sigmaAnd.syValueSecond();
 			var arg1New = convertItes(arg1);
 			var arg2New = convertItes(arg2);
-			return new SyValueAdd(arg1New, arg2New);
+			return new SyValueAnd(arg1New, arg2New);
 		} else if (sigma instanceof SyValueOr sigmaOr) {
 			var arg1 = sigmaOr.syValueFirst();
 			var arg2 = sigmaOr.syValueSecond();
