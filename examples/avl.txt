@@ -267,7 +267,7 @@ class AvlTree extends Object {
   let foo4 := (pFind2.arg1 := ((pFind.arg1).right)) in
   let foo5 := (pFind2.x1 := (pFind.x1)) in 
   let foo6 := (pFind2.depth3 := ((pFind.depth3) + 1)) in 
-  ((this.maxElementN[pFind1]) && (this.maxElementN[pFind2]));
+  if (~(this.maxElementN[pFind1])) then false else (this.maxElementN[pFind2]);
 
   boolean maxElement(int xx) :=
   let pFind := new FindParameters in
@@ -288,7 +288,7 @@ class AvlTree extends Object {
   let foo4 := (pFind2.arg1 := ((pFind.arg1).right)) in
   let foo5 := (pFind2.x1 := (pFind.x1)) in 
   let foo6 := (pFind2.depth3 := ((pFind.depth3) + 1)) in 
-  ((this.minElementN[pFind1]) && (this.minElementN[pFind2]));
+  if (~(this.minElementN[pFind1])) then false else (this.minElementN[pFind2]);
  
   boolean minElement(int xx) :=
   let pFind := new FindParameters in
