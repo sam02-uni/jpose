@@ -71,7 +71,7 @@ import jpose.syntax.SyValueSub;
 import jpose.syntax.SyValueSubtypeRel;
 import jpose.syntax.SyValueUnassumed;
 
-public final class Interpreter {
+public final class Interpreter { 
 	public void stepRefinement(SemConfiguration J) {
 		Objects.requireNonNull(J);
 		
