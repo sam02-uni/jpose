@@ -74,28 +74,28 @@ class DoubleLinkedList extends Object {
     let foo6 := (this.size := ((this.size) + 1)) in
     newEntry;
 
-  Void remove(Entry e) :=
+  Void removeE(Entry e) :=
     if ((this.header) = e) then null else
     let foo1 := ((e.previous).next := (e.next)) in
-    let f002 := ((e.next).previous := (e.previous)) in
+    let foo2 := ((e.next).previous := (e.previous)) in
     let foo3 := (this.size := ((this.size) - 1)) in
     new Void;
 
-  Object removeAtIndex(int ind) :=
+  Object remove(int ind) :=
     let e := (this.entry[ind]) in
-    let foo1 := (this.remove[e]) in
+    let foo1 := (this.removeE[e]) in
     (e.element);
 
   Object removeFirst(Void n) :=
     let e := ((this.header).next) in
     let objFirst := (e.element) in
-    let foo1 := (this.remove[e]) in
+    let foo1 := (this.removeE[e]) in
     objFirst;
 
   Object removeLast(Void n) :=
     let e := ((this.header).previous) in
     let objLast := (e.element) in
-    let foo1 := (this.remove[e]) in
+    let foo1 := (this.removeE[e]) in
     objLast;
 
   Object getFirst(Void arg) :=
