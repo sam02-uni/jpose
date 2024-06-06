@@ -1310,7 +1310,7 @@ public final class Interpreter {
 		var Js = List.of(J0);
 		int width = 1;
 		for (int i = 0; i < n; ++i) {
-			System.out.println(i);
+			//System.out.println(i);
 			Js = Js.stream().filter(J -> { return !isLeaf(J); }).map(J -> { return step(J); }).flatMap(Collection::stream).collect(Collectors.toList());
 			if (solver != null && Js.size() > width) {
 				Js = Js.stream().filter(solver::filter).collect(Collectors.toList());
@@ -1336,7 +1336,7 @@ public final class Interpreter {
 		int width = 1;
 		var retVal = new ArrayList<SemConfiguration>();
 		for (int i = 0; i < n; ++i) {
-			System.out.println(i);
+			//System.out.println(i);
 			Js = Js.stream().filter(J -> { return !isLeaf(J); }).map(J -> { return step(J); }).flatMap(Collection::stream).collect(Collectors.toList());
 			if (solver != null && Js.size() > width) {
 				Js = Js.stream().filter(solver::filter).collect(Collectors.toList());

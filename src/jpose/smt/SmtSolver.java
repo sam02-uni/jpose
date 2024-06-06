@@ -8,7 +8,7 @@ public interface SmtSolver {
 			return true;
 		}
 		var retVal = querySat(J);
-		System.out.print("'");
+		//System.out.print("'");
 		if (retVal == true) {
 			J.setPathConditionSurelySatisfiable();
 		} else if (J.companion().isPresent()) {

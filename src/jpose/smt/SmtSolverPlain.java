@@ -35,7 +35,7 @@ public final class SmtSolverPlain implements SmtSolver {
 	@Override
 	public boolean querySat(SemConfiguration J) {
 		++this.totalNumberOfQueries;
-		System.out.print("*");
+		//System.out.print("*");
 		var smtQuery = this.smtPrinter.configToSmt(J);
 		final long startMillis = System.currentTimeMillis();
 		sendToSolver(smtQuery);
@@ -49,7 +49,7 @@ public final class SmtSolverPlain implements SmtSolver {
 	
 	boolean querySat(SyProgram P, List<SyValue> pathCondition) {
 		++this.totalNumberOfQueries;
-		System.out.print("*");
+		//System.out.print("*");
 		var smtQuery = this.smtPrinter.pathConditionToSmt(P, pathCondition);
 		final long startMillis = System.currentTimeMillis();
 		sendToSolver(smtQuery);
