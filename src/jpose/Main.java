@@ -13,7 +13,6 @@ import jpose.semantics.interpreter.Interpreter;
 import jpose.semantics.types.SemConfiguration;
 import jpose.smt.SmtPrinter;
 import jpose.smt.SmtSolver;
-import jpose.smt.SmtSolverPlain;
 import jpose.smt.SmtSolverUnwind;
 import jpose.syntax.SyProgram;
 
