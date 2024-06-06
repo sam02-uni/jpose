@@ -1,0 +1,190 @@
+#!/bin/sh
+
+Z3=`which z3`
+JPOSE="java -Xss1024m -Xms8192m --module-path ../bin:../lib -m jpose/jpose.Main"
+
+printf "================\n"
+printf "POSE experiments\n"
+printf "================\n\n"
+printf "fig_1a traces: "
+$JPOSE -c -l -p -z3 $Z3 fig_1a.txt 600
+$JPOSE -t -p -z3 $Z3 fig_1a.txt 600
+printf "\n"
+printf "fig_1b traces: "
+$JPOSE -c -l -p -z3 $Z3 fig_1b.txt 600
+$JPOSE -t -p -z3 $Z3 fig_1b.txt 600
+printf "\n"
+printf "fig_1c bound 4 traces: "
+$JPOSE -c -l -p -z3 $Z3 fig_1c.txt 600
+$JPOSE -t -p -z3 $Z3 fig_1c.txt 600
+printf "\n"
+printf "avl_balanced traces: "
+$JPOSE -c -l -p -z3 $Z3 avl_balanced.txt 600
+$JPOSE -t -p -z3 $Z3 avl_balanced.txt 600
+printf "\n"
+printf "avl_find traces: "
+$JPOSE -c -l -p -z3 $Z3 avl_find.txt 600
+$JPOSE -t -p -z3 $Z3 avl_find.txt 600
+printf "\n"
+printf "avl_findMax traces: "
+$JPOSE -c -l -p -z3 $Z3 avl_findMax.txt 600
+$JPOSE -t -p -z3 $Z3 avl_findMax.txt 600
+printf "\n"
+printf "avl_findMin traces: "
+$JPOSE -c -l -p -z3 $Z3 avl_findMin.txt 600
+$JPOSE -t -p -z3 $Z3 avl_findMin.txt 600
+printf "\n"
+printf "avl_insertElem traces: "
+$JPOSE -c -l -p -z3 $Z3 avl_insertElem.txt 600
+$JPOSE -t -p -z3 $Z3 avl_insertElem.txt 600
+printf "\n"
+printf "avl_isEmpty traces: "
+$JPOSE -c -l -p -z3 $Z3 avl_isEmpty.txt 600
+$JPOSE -t -p -z3 $Z3 avl_isEmpty.txt 600
+printf "\n"
+printf "avl_makeEmpty traces: "
+$JPOSE -c -l -p -z3 $Z3 avl_makeEmpty.txt 600
+$JPOSE -t -p -z3 $Z3 avl_makeEmpty.txt 600
+printf "\n"
+printf "avl_maxElement traces: "
+$JPOSE -c -l -p -z3 $Z3 avl_maxElement.txt 600
+$JPOSE -t -p -z3 $Z3 avl_maxElement.txt 600
+printf "\n"
+printf "avl_minElement traces: "
+$JPOSE -c -l -p -z3 $Z3 avl_minElement.txt 600
+$JPOSE -t -p -z3 $Z3 avl_minElement.txt 600
+printf "\n"
+printf "dll_add traces: "
+$JPOSE -c -l -p -z3 $Z3 dll_add.txt 600
+$JPOSE -t -p -z3 $Z3 dll_add.txt 600
+printf "\n"
+printf "dll_get traces: "
+$JPOSE -c -l -p -z3 $Z3 dll_get.txt 600
+$JPOSE -t -p -z3 $Z3 dll_get.txt 600
+printf "\n"
+printf "dll_getFirst traces: "
+$JPOSE -c -l -p -z3 $Z3 dll_getFirst.txt 600
+$JPOSE -t -p -z3 $Z3 dll_getFirst.txt 600
+printf "\n"
+printf "dll_getLast traces: "
+$JPOSE -c -l -p -z3 $Z3 dll_getLast.txt 600
+$JPOSE -t -p -z3 $Z3 dll_getLast.txt 600
+printf "\n"
+printf "dll_indexOf traces: "
+$JPOSE -c -l -p -z3 $Z3 dll_indexOf.txt 600
+$JPOSE -t -p -z3 $Z3 dll_indexOf.txt 600
+printf "\n"
+printf "dll_remove traces: "
+$JPOSE -c -l -p -z3 $Z3 dll_remove.txt 600
+$JPOSE -t -p -z3 $Z3 dll_remove.txt 600
+printf "\n"
+printf "dll_removeFirst traces: "
+$JPOSE -c -l -p -z3 $Z3 dll_removeFirst.txt 600
+$JPOSE -t -p -z3 $Z3 dll_removeFirst.txt 600
+printf "\n"
+printf "dll_removeLast traces: "
+$JPOSE -c -l -p -z3 $Z3 dll_removeLast.txt 600
+$JPOSE -t -p -z3 $Z3 dll_removeLast.txt 600
+printf "\n"
+printf "ncll_add traces: "
+$JPOSE -c -l -p -z3 $Z3 ncll_add.txt 600
+$JPOSE -t -p -z3 $Z3 ncll_add.txt 600
+printf "\n"
+printf "treemap_put traces: "
+$JPOSE -c -l -p -z3 $Z3 treemap_put.txt 600
+$JPOSE -t -p -z3 $Z3 treemap_put.txt 600
+printf "\n"
+
+printf "=======================\n"
+printf "POSE-unwind experiments\n"
+printf "=======================\n\n"
+printf "fig_1a traces: "
+$JPOSE -c -l -u -p -z3 $Z3 fig_1a.txt 600
+$JPOSE -t -u -p -z3 $Z3 fig_1a.txt 600
+printf "\n"
+printf "fig_1b traces: "
+$JPOSE -c -l -u -p -z3 $Z3 fig_1b.txt 600
+$JPOSE -t -u -p -z3 $Z3 fig_1b.txt 600
+printf "\n"
+printf "fig_1c bound 4 traces: "
+$JPOSE -c -l -u -p -z3 $Z3 fig_1c.txt 600
+$JPOSE -t -u -p -z3 $Z3 fig_1c.txt 600
+printf "\n"
+printf "avl_balanced traces: "
+$JPOSE -c -l -u -p -z3 $Z3 avl_balanced.txt 600
+$JPOSE -t -u -p -z3 $Z3 avl_balanced.txt 600
+printf "\n"
+printf "avl_find traces: "
+$JPOSE -c -l -u -p -z3 $Z3 avl_find.txt 600
+$JPOSE -t -u -p -z3 $Z3 avl_find.txt 600
+printf "\n"
+printf "avl_findMax traces: "
+$JPOSE -c -l -u -p -z3 $Z3 avl_findMax.txt 600
+$JPOSE -t -u -p -z3 $Z3 avl_findMax.txt 600
+printf "\n"
+printf "avl_findMin traces: "
+$JPOSE -c -l -u -p -z3 $Z3 avl_findMin.txt 600
+$JPOSE -t -u -p -z3 $Z3 avl_findMin.txt 600
+printf "\n"
+printf "avl_insertElem traces: "
+$JPOSE -c -l -u -p -z3 $Z3 avl_insertElem.txt 600
+$JPOSE -t -u -p -z3 $Z3 avl_insertElem.txt 600
+printf "\n"
+printf "avl_isEmpty traces: "
+$JPOSE -c -l -u -p -z3 $Z3 avl_isEmpty.txt 600
+$JPOSE -t -u -p -z3 $Z3 avl_isEmpty.txt 600
+printf "\n"
+printf "avl_makeEmpty traces: "
+$JPOSE -c -l -u -p -z3 $Z3 avl_makeEmpty.txt 600
+$JPOSE -t -u -p -z3 $Z3 avl_makeEmpty.txt 600
+printf "\n"
+printf "avl_maxElement traces: "
+$JPOSE -c -l -u -p -z3 $Z3 avl_maxElement.txt 600
+$JPOSE -t -u -p -z3 $Z3 avl_maxElement.txt 600
+printf "\n"
+printf "avl_minElement traces: "
+$JPOSE -c -l -u -p -z3 $Z3 avl_minElement.txt 600
+$JPOSE -t -u -p -z3 $Z3 avl_minElement.txt 600
+printf "\n"
+printf "dll_add traces: "
+$JPOSE -c -l -u -p -z3 $Z3 dll_add.txt 600
+$JPOSE -t -u -p -z3 $Z3 dll_add.txt 600
+printf "\n"
+printf "dll_get traces: "
+$JPOSE -c -l -u -p -z3 $Z3 dll_get.txt 600
+$JPOSE -t -u -p -z3 $Z3 dll_get.txt 600
+printf "\n"
+printf "dll_getFirst traces: "
+$JPOSE -c -l -u -p -z3 $Z3 dll_getFirst.txt 600
+$JPOSE -t -u -p -z3 $Z3 dll_getFirst.txt 600
+printf "\n"
+printf "dll_getLast traces: "
+$JPOSE -c -l -u -p -z3 $Z3 dll_getLast.txt 600
+$JPOSE -t -u -p -z3 $Z3 dll_getLast.txt 600
+printf "\n"
+printf "dll_indexOf traces: "
+$JPOSE -c -l -u -p -z3 $Z3 dll_indexOf.txt 600
+$JPOSE -t -u -p -z3 $Z3 dll_indexOf.txt 600
+printf "\n"
+printf "dll_remove traces: "
+$JPOSE -c -l -u -p -z3 $Z3 dll_remove.txt 600
+$JPOSE -t -u -p -z3 $Z3 dll_remove.txt 600
+printf "\n"
+printf "dll_removeFirst traces: "
+$JPOSE -c -l -u -p -z3 $Z3 dll_removeFirst.txt 600
+$JPOSE -t -u -p -z3 $Z3 dll_removeFirst.txt 600
+printf "\n"
+printf "dll_removeLast traces: "
+$JPOSE -c -l -u -p -z3 $Z3 dll_removeLast.txt 600
+$JPOSE -t -u -p -z3 $Z3 dll_removeLast.txt 600
+printf "\n"
+printf "ncll_add traces: "
+$JPOSE -c -l -u -p -z3 $Z3 ncll_add.txt 600
+$JPOSE -t -u -p -z3 $Z3 ncll_add.txt 600
+printf "\n"
+printf "treemap_put traces: "
+$JPOSE -c -l -u -p -z3 $Z3 treemap_put.txt 600
+$JPOSE -t -u -p -z3 $Z3 treemap_put.txt 600
+printf "\n"
+
+
