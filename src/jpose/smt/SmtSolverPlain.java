@@ -1,7 +1,10 @@
 package jpose.smt;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -14,8 +17,9 @@ import jpose.syntax.SyValue;
 public final class SmtSolverPlain implements SmtSolver {
 	private final Path solverPath;
 	private final SmtPrinter smtPrinter;
-	private final Path solverInputFile;
-	private final Path solverOutputFile;
+	private Process solver;
+	private BufferedReader solverInputFile;
+	private BufferedWriter solverOutputFile;
 	private long totalSolverTimeMillis;
 	private long totalNumberOfQueries;
 	private long totalNumberOfQueriesSat;
@@ -23,12 +27,7 @@ public final class SmtSolverPlain implements SmtSolver {
 	public SmtSolverPlain(Path solverPath) {
 		this.solverPath = solverPath;
 		this.smtPrinter = new SmtPrinter();
-		try {
-			this.solverInputFile = Files.createTempFile("query", ".smt");
-			this.solverOutputFile = Files.createTempFile("answer", ".smt");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		runSolver();
 		this.totalSolverTimeMillis = 0L;
 		this.totalNumberOfQueries = 0L;
 		this.totalNumberOfQueriesSat = 0L;
@@ -39,9 +38,10 @@ public final class SmtSolverPlain implements SmtSolver {
 		++this.totalNumberOfQueries;
 		System.out.print("*");
 		var smtQuery = this.smtPrinter.configToSmt(J);
-		saveToFile(smtQuery);
-		runSolver();
+		final long startMillis = System.currentTimeMillis();
+		sendToSolver(smtQuery);
 		var sat = readResult();
+		this.totalSolverTimeMillis += System.currentTimeMillis() - startMillis;
 		if (sat) {
 			++this.totalNumberOfQueriesSat;
 		}
@@ -52,9 +52,10 @@ public final class SmtSolverPlain implements SmtSolver {
 		++this.totalNumberOfQueries;
 		System.out.print("*");
 		var smtQuery = this.smtPrinter.pathConditionToSmt(P, pathCondition);
-		saveToFile(smtQuery);
-		runSolver();
+		final long startMillis = System.currentTimeMillis();
+		sendToSolver(smtQuery);
 		var sat = readResult();
+		this.totalSolverTimeMillis += System.currentTimeMillis() - startMillis;
 		if (sat) {
 			++this.totalNumberOfQueriesSat;
 		}
@@ -76,42 +77,36 @@ public final class SmtSolverPlain implements SmtSolver {
 		return this.totalNumberOfQueriesSat;
 	}
 	
-	private void saveToFile(String smtQuery) {
-		try (final BufferedWriter w = Files.newBufferedWriter(this.solverInputFile)) {
-			w.write(smtQuery);
-			w.write("(check-sat)\n");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	private void runSolver() {
 		final ArrayList<String> commandLine = new ArrayList<>();
 		commandLine.add(this.solverPath.toString());
 		commandLine.add("-smt2");
-		commandLine.add(this.solverInputFile.toString());
-		final ProcessBuilder pb = new ProcessBuilder(commandLine).redirectErrorStream(true).redirectOutput(this.solverOutputFile.toFile());
-		final Process p;
-		final long startTime = System.currentTimeMillis();
+		commandLine.add("-in");
+		final ProcessBuilder pb = new ProcessBuilder(commandLine).redirectErrorStream(true);
 		try {
-			p = pb.start();
+			this.solver = pb.start();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		this.solverInputFile = new BufferedReader(new InputStreamReader(this.solver.getInputStream()));
+		this.solverOutputFile = new BufferedWriter(new OutputStreamWriter(this.solver.getOutputStream()));
+	}
+	
+	private void sendToSolver(String smtQuery) {
 		try {
-			p.waitFor();
-		} catch (InterruptedException e) {
-			//this should never happen
-			throw new AssertionError(e);
+			this.solverOutputFile.write("(reset)\n");
+			this.solverOutputFile.write(smtQuery);
+			this.solverOutputFile.write("(check-sat)\n");
+			this.solverOutputFile.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-		final long elapsedTime = System.currentTimeMillis() - startTime;
-		this.totalSolverTimeMillis += elapsedTime;
 	}
 	
 	private boolean readResult() {
 		final String answer;
 		try {
-			answer = Files.readString(this.solverOutputFile).trim();
+			answer = this.solverInputFile.readLine().trim();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -120,7 +115,28 @@ public final class SmtSolverPlain implements SmtSolver {
 		} else if ("sat".equals(answer)) {
 			return true;
 		} else {
-			throw new RuntimeException("Unrecognized answer from smt solver, see files " + solverInputFile.toString() + " and " + solverOutputFile.toString());
+			throw new RuntimeException("Unrecognized answer from smt solver: " + answer);
+		}
+	}
+	
+	@Override
+	public void quit() {
+		try {
+			this.solverOutputFile.write("(exit)\n");
+			this.solverOutputFile.flush();
+			while (this.solverInputFile.readLine() != null) {
+				//do nothing
+			}
+			this.solverInputFile.close();
+			this.solverOutputFile.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+		try {
+			this.solver.waitFor();
+		} catch (InterruptedException e) {
+			//do nothing
 		}
 	}
 }

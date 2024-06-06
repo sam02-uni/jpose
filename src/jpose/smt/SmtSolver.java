@@ -20,4 +20,5 @@ public interface SmtSolver {
 	long totalSolverTimeMillis();
 	long totalNumberOfQueries();
 	long totalNumberOfQueriesSat();
+	void quit();
 }

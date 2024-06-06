@@ -69,6 +69,11 @@ public final class SmtSolverUnwind implements SmtSolver {
 		return this.smtSolver.totalNumberOfQueriesSat();
 	}
 	
+	@Override
+	public void quit() {
+		this.smtSolver.quit();
+	}
+	
 	private Iterable<List<SyValue>> possiblyUnwindPathCondition(List<SyValue> pathCondition) {
 		final Iterable<List<SyValue>> retVal = possiblyUnwindPathConditionBDD(pathCondition);
 		return retVal;

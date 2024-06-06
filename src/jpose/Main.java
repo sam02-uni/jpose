@@ -107,6 +107,9 @@ public final class Main {
 					break;
 				}
 			}
+			if (prune) {
+				z3Solver.quit();
+			}
 		}
 	}
 
