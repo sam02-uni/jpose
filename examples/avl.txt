@@ -20,20 +20,9 @@ class MaxParameters extends Object {
   int rhs;
 }
 
-class BalancedNodeParameters extends Object {
-  int depth2;
-  AvlNode k1;
-}
-
 class FindParameters extends Object {
-  int depth3;
-  int x1;
-  AvlNode arg1;
-}
-
-class FindMParameters extends Object {
-  int depth4;
-  AvlNode arg2;
+  int x;
+  AvlNode arg;
 }
 
 class AvlTree extends Object {
@@ -48,8 +37,9 @@ class AvlTree extends Object {
     let foo3 := (this.root := (this.insert[pInsert])) in
     null;
 
-  AvlNode insert(InsertParameters pInsert) :=
-    if ((pInsert.arg) = null) then
+ AvlNode insert(InsertParameters pInsert) :=
+    if ((this.depthBound) < (pInsert.depth)) then null
+    else if ((pInsert.arg) = null) then
       let t := new AvlNode in
       let foo4 := (t.element := (pInsert.x)) in
       let foo5 := (t.left := null) in
@@ -59,73 +49,59 @@ class AvlTree extends Object {
       let foo8 := (pMax.rhs := (this.height[(t.right)])) in
       let foo9 := (t.height := ((this.max[pMax]) + 1)) in
       t
-    else if ((this.depthBound) < (pInsert.depth)) then
-      let t := (pInsert.arg) in
-      let pMax := new MaxParameters in
-      let foo10 := (pMax.lhs := (this.height[(t.left)])) in
-      let foo11 := (pMax.rhs := (this.height[(t.right)])) in
-      let foo12 := (t.height := ((this.max[pMax]) + 1)) in
-      t
     else if ((pInsert.x) < ((pInsert.arg).element)) then
       let t := (pInsert.arg) in
       let pInsertLeft := new InsertParameters in
-      let foo13 := (pInsertLeft.depth := ((pInsert.depth) + 1)) in
-      let foo14 := (pInsertLeft.x := (pInsert.x)) in
-      let foo15 := (pInsertLeft.arg := (t.left)) in
-      let foo16 := (t.left := (this.insert[pInsertLeft])) in
+      let foo10 := (pInsertLeft.depth := ((pInsert.depth) + 1)) in
+      let foo11 := (pInsertLeft.x := (pInsert.x)) in
+      let foo12 := (pInsertLeft.arg := (t.left)) in
+      let foo13 := (t.left := (this.insert[pInsertLeft])) in
       if (((this.height[(t.left)]) - (this.height[(t.right)])) = 2) then
         let t2 := if ((pInsert.x) < ((t.left).element)) then
-          (this.rotateWithLeftChild[t])
-        else if (~(((t.left).right) = null)) then
-          (this.doubleWithLeftChild[t]) else t in
+	  (this.rotateWithLeftChild[t])
+	else
+	  (this.doubleWithLeftChild[t]) in
         let pMax := new MaxParameters in
-        let foo17 := (pMax.lhs := (this.height[(t2.left)])) in
-        let foo18 := (pMax.rhs := (this.height[(t2.right)])) in
-        let foo19 := (t2.height := ((this.max[pMax]) + 1)) in
+        let foo14 := (pMax.lhs := (this.height[(t2.left)])) in
+        let foo15 := (pMax.rhs := (this.height[(t2.right)])) in
+        let foo16 := (t2.height := ((this.max[pMax]) + 1)) in
         t2
       else let pMax := new MaxParameters in
-      let foo20 := (pMax.lhs := (this.height[(t.left)])) in
-      let foo21 := (pMax.rhs := (this.height[(t.right)])) in
-      let foo22 := (t.height := ((this.max[pMax]) + 1)) in
+      let foo17 := (pMax.lhs := (this.height[(t.left)])) in
+      let foo18 := (pMax.rhs := (this.height[(t.right)])) in
+      let foo19 := (t.height := ((this.max[pMax]) + 1)) in
       t
     else if (((pInsert.arg).element) < (pInsert.x)) then
       let t := (pInsert.arg) in
       let pInsertRight := new InsertParameters in
-      let foo23 := (pInsertRight.depth := ((pInsert.depth) + 1)) in
-      let foo24 := (pInsertRight.x := (pInsert.x)) in
-      let foo25 := (pInsertRight.arg := (t.right)) in
-      let foo26 := (t.right := (this.insert[pInsertRight])) in
+      let foo20 := (pInsertRight.depth := ((pInsert.depth) + 1)) in
+      let foo21 := (pInsertRight.x := (pInsert.x)) in
+      let foo22 := (pInsertRight.arg := (t.right)) in
+      let foo23 := (t.right := (this.insert[pInsertRight])) in
       if (((this.height[(t.right)]) - (this.height[(t.left)])) = 2) then
         let t2 := if (((t.right).element) < (pInsert.x)) then
-          (this.rotateWithRightChild[t])
-        else if (~(((t.right).left) = null)) then
-          (this.doubleWithRightChild[t]) else t in
+	  (this.rotateWithRightChild[t])
+	else
+	  (this.doubleWithRightChild[t]) in
         let pMax := new MaxParameters in
-        let foo27 := (pMax.lhs := (this.height[(t2.left)])) in
-        let foo28 := (pMax.rhs := (this.height[(t2.right)])) in
-        let foo29 := (t2.height := ((this.max[pMax]) + 1)) in
+        let foo24 := (pMax.lhs := (this.height[(t2.left)])) in
+        let foo25 := (pMax.rhs := (this.height[(t2.right)])) in
+        let foo26 := (t2.height := ((this.max[pMax]) + 1)) in
         t2
       else let pMax := new MaxParameters in
-      let foo30 := (pMax.lhs := (this.height[(t.left)])) in
-      let foo31 := (pMax.rhs := (this.height[(t.right)])) in
-      let foo32 := (t.height := ((this.max[pMax]) + 1)) in
+      let foo27 := (pMax.lhs := (this.height[(t.left)])) in
+      let foo28 := (pMax.rhs := (this.height[(t.right)])) in
+      let foo29 := (t.height := ((this.max[pMax]) + 1)) in
       t
-    else
-      let t := (pInsert.arg) in
-      let pMax := new MaxParameters in
-      let foo33 := (pMax.lhs := (this.height[(t.left)])) in
-      let foo34 := (pMax.rhs := (this.height[(t.right)])) in
-      let foo35 := (t.height := ((this.max[pMax]) + 1)) in
-      t;
-    
+    else t;
 
   int max(MaxParameters pMax) :=
     if ((pMax.lhs) < (pMax.rhs)) then (pMax.rhs) else (pMax.lhs);
 
-  int height(AvlNode t) :=
+ int height(AvlNode t) :=
     if (t = null) then (0 - 1) else (t.height);
 
-  Void rotateWithLeftChild(AvlNode k2) :=
+ Void rotateWithLeftChild(AvlNode k2) :=
     let k1 := (k2.left) in
     let foo30 := (k2.left := (k1.right)) in
     let foo31 := (k1.right := k2) in
@@ -138,7 +114,7 @@ class AvlTree extends Object {
     let foo37 := (k1.height := ((this.max[pMax]) + 1)) in
     k1;
 
-  Void rotateWithRightChild(AvlNode k1) :=
+ Void rotateWithRightChild(AvlNode k1) :=
     let k2 := (k1.right) in
     let foo38 := (k1.right := (k2.left)) in
     let foo39 := (k2.left := k1) in
@@ -151,149 +127,136 @@ class AvlTree extends Object {
     let foo45 := (k2.height := ((this.max[pMax]) + 1)) in
     k2;
 
-  Void doubleWithLeftChild(AvlNode k3) :=
+ Void doubleWithLeftChild(AvlNode k3) :=
     let foo46 := (k3.left := (this.rotateWithRightChild[(k3.left)])) in
     (this.rotateWithLeftChild[k3]);
 
-  Void doubleWithRightChild(AvlNode k1) :=
+ Void doubleWithRightChild(AvlNode k1) :=
     let foo47 := (k1.right := (this.rotateWithLeftChild[(k1.right)])) in
     (this.rotateWithRightChild[k1]);
 
-  AvlNode findMaxNode(FindMParameters p) :=
-  if ((this.depthBound) < (p.depth4)) then null else
-  if ((p.arg2) = null) then (p.arg2) else
-  if (((p.arg2).right) = null) then (p.arg2) else
-  let p2 := new FindMParameters in
-  let foo1 := (p2.depth4 := ((p.depth4) + 1)) in
-  let foo2 := (p2.arg2 := ((p.arg2).right)) in
-  (this.findMaxNode[p2]);
+ AvlNode findMax(AvlNode t) :=
+  if (t = null) then t else
+  if ((t.right) = null) then t else
+  (this.findMax[(t.right)]);
 
-  AvlNode findMinNode(FindMParameters p) :=
-  if ((this.depthBound) < (p.depth4)) then null else
-  if ((p.arg2) = null) then (p.arg2) else
-  if (((p.arg2).left) = null) then (p.arg2) else
-  let p2 := new FindMParameters in
-  let foo1 := (p2.depth4 := ((p.depth4) + 1)) in
-  let foo2 := (p2.arg2 := ((p.arg2).left)) in
-  (this.findMinNode[p2]);
+ AvlNode findMin (AvlNode t) :=
+  if (t = null) then t else
+  if ((t.left) = null) then t else
+  (this.findMin[(t.left)]);
   
-  int findMax(Void v) :=
-  let p := new FindMParameters in
-  let foo1 := (p.depth4 := 0) in
-  let foo2 := (p.arg2 := (this.root)) in
-  (this.elementAt[(this.findMaxNode[p])]);
+ int findMaxRoot(AvlNode t) :=
+  (this.elementAt[(this.findMax[(this.root)])]);
   
-  int findMin(Void v) :=
-  let p := new FindMParameters in
-  let foo1 := (p.depth4 := 0) in
-  let foo2 := (p.arg2 := (this.root)) in
-  (this.elementAt[(this.findMinNode[p])]);  
+  int findMinRoot(AvlNode t) :=
+  (this.elementAt[(this.findMin[(this.root)])]);  
 
-  boolean balancedNode(BalancedNodeParameters p) :=
-  if ((this.depthBound) < (p.depth2)) then true else
-  if ((p.k1) = null) then true else
-  let lh := (this.height[((p.k1).left)]) in
-  let rh := (this.height[((p.k1).right)]) in
-  let rh1 := (rh + 1) in
-  let lh1 := (lh + 1) in
-  let check := (((lh = rh) || (lh = rh1)) || (lh1 = rh)) in
-  let p1 := new BalancedNodeParameters in
-  let foo1 := (p1.k1 := ((p.k1).left)) in
-  let foo2 := (p1.depth2 := ((p.depth2) + 1)) in
-  let p2 := new BalancedNodeParameters in
-  let foo3 := (p2.k1 := ((p.k1).right)) in
-  let foo4 := (p2.depth2 := ((p.depth2) + 1)) in
-  if ((check && (this.balancedNode[p1])) && (this.balancedNode[p2])) then true else false;
+ boolean balanced(AvlNode k1) :=
+  if (k1 = null) then true else
+  let foolh := (AvlTree.height[(k1.left)]) in
+  let foorh := (AvlTree.height[(k1.right)]) in
+  let foo1 := (foorh + 1) in
+  let foo2 := (foolh + 1) in
+  let foo3 := (((foolh = foorh) || (foolh = foo1)) || (foo2 = foorh)) in
+  if ((foo3 && (this.balanced[(k1.left)])) && (this.balanced[(k1.right)])) then true else false;
 
-  boolean balanced(Void v) :=
-  let p := new BalancedNodeParameters in
-  let foo1 := (p.k1 := (this.root)) in
-  let foo2 := (p.depth2 := 0) in
-  (this.balancedNode[p]);
+ boolean balancedRoot(AvlNode k1) :=
+  (this.balanced[(this.root)]);
 
-  int elementAt(AvlNode k1) :=
-  if (k1 = null) then (0 - 1) else
+ int elementAt(AvlNode k1) :=
+  if (k1 = null)  then (1 - 2) else
   (k1.element);
 
-  boolean isEmpty(Void v) :=
+ boolean isEmpty(int x) :=
   if ((this.root) = null) then true else false;
   
-  Void makeEmpty(Void v) :=
+ Void makeEmpty(int x) :=
   let foo1 := (this.root := null) in
   null;
  
-  AvlNode findN(FindParameters pFind) :=
-  if ((this.depthBound) < (pFind.depth3)) then null else
-  let t := (pFind.arg1) in
-  if (t = null) then null else
-  if ((t.element) = (pFind.x1)) then t else 
-  if ((pFind.x1) < (t.element)) then 
-    let pFind2 := new FindParameters in
-    let foo1 := (pFind2.arg1 := (t.left)) in
-    let foo2 := (pFind2.x1 := (pFind.x1)) in 
-    let foo3 := (pFind2.depth3 := ((pFind.depth3) + 1)) in
-    (this.findN[pFind2]) 
+ AvlNode find(FindParameters pFind) :=
+  if (((pFind.arg) = null) || (((pFind.arg).element) = (pFind.x))) then (pFind.arg) else 
+  if ((pFind.x) < ((pFind.arg).element)) then 
+  let pFind2 := new FindParameters in
+  let foo1 := (pFind2.arg := ((pFind.arg).left)) in
+  let foo2 := (pFind2.x := (pFind.x)) in 
+  (this.find[pFind2]) 
   else
-    let pFind3 := new FindParameters in
-    let foo4 := (pFind3.arg1 := (t.right)) in
-    let foo5 := (pFind3.x1 := (pFind.x1)) in
-    let foo6 := (pFind3.depth3 := ((pFind.depth3) + 1)) in
-    (this.findN[pFind3]);
+  let pFind3 := new FindParameters in
+  let foo3 := (pFind3.arg := ((pFind.arg).right)) in
+  let foo4 := (pFind3.x := (pFind.x)) in
+  (this.find[pFind3]);
  
-  int find(int xx) :=
+ int findX(int xx) :=
   let pFind := new FindParameters in
-  let foo1 := (pFind.arg1 := (this.root)) in
-  let foo2 := (pFind.x1 := xx) in
-  let foo3 := (pFind.depth3 := 0) in
-  let tmp := (this.findN[pFind]) in
-  (this.elementAt[tmp]);
+  let foo1 := (pFind.arg := (this.root)) in
+  let foo2 := (pFind.x := xx) in
+  let foo3 := (this.find[pFind]) in
+  (this.elementAt[foo3]);
   
-  AvlNode findNode(int xx) :=
+ AvlNode findNode(int xx) :=
   let pFind := new FindParameters in
-  let foo1 := (pFind.arg1 := (this.root)) in
-  let foo2 := (pFind.x1 := xx) in
-  let foo3 := (pFind.depth3 := 0) in
-  (this.findN[pFind]);
+  let foo1 := (pFind.arg := (this.root)) in
+  let foo2 := (pFind.x := xx) in
+  (this.find[pFind]);
   
-  boolean maxElementN(FindParameters pFind) :=
-  if ((this.depthBound) < (pFind.depth3)) then true else
-  if ((pFind.arg1) = null) then true else
-  if ((pFind.x1) < ((pFind.arg1).element)) then false else
+ boolean maxElement(FindParameters pFind) :=
+  if ((pFind.arg) = null) then true else
+  if ((pFind.x) < ((pFind.arg).element)) then false else
   let pFind1 := new FindParameters in
-  let foo1 := (pFind1.arg1 := ((pFind.arg1).left)) in
-  let foo2 := (pFind1.x1 := (pFind.x1)) in 
-  let foo3 := (pFind1.depth3 := ((pFind.depth3) + 1)) in 
+  let foo1 := (pFind2.arg := ((pFind.arg).left)) in
+  let foo2 := (pFind2.x := (pFind.x)) in 
   let pFind2 := new FindParameters in
-  let foo4 := (pFind2.arg1 := ((pFind.arg1).right)) in
-  let foo5 := (pFind2.x1 := (pFind.x1)) in 
-  let foo6 := (pFind2.depth3 := ((pFind.depth3) + 1)) in 
-  if (~(this.maxElementN[pFind1])) then false else (this.maxElementN[pFind2]);
+  let foo3 := (pFind2.arg := ((pFind.arg).right)) in
+  let foo4 := (pFind2.x := (pFind.x)) in 
+  ((this.maxElement[pFind1]) && (this.maxElement[pFind2]));
 
-  boolean maxElement(int xx) :=
+  boolean maxElementB(int xx) :=
   let pFind := new FindParameters in
-  let foo1 := (pFind.arg1 := (this.root)) in
-  let foo2 := (pFind.x1 := xx) in
-  let foo3 := (pFind.depth3 := 0) in
-  (this.maxElementN[pFind]);
+  let foo1 := (pFind.arg := (this.root)) in
+  let foo2 := (pFind.x := xx) in
+  (this.maxElement[pFind]);
 
-  boolean minElementN(FindParameters pFind) :=
-  if ((this.depthBound) < (pFind.depth3)) then true else
-  if ((pFind.arg1) = null) then true else
-  if (((pFind.arg1).element) < (pFind.x1)) then false else
+ boolean minElement(FindParameters pFind) :=
+  if ((pFind.arg) = null) then true else
+  if  (~((pFind.x) < ((pFind.arg).element))) then false else
   let pFind1 := new FindParameters in
-  let foo1 := (pFind1.arg1 := ((pFind.arg1).left)) in
-  let foo2 := (pFind1.x1 := (pFind.x1)) in 
-  let foo3 := (pFind1.depth3 := ((pFind.depth3) + 1)) in 
+  let foo1 := (pFind2.arg := ((pFind.arg).left)) in
+  let foo2 := (pFind2.x := (pFind.x)) in 
   let pFind2 := new FindParameters in
-  let foo4 := (pFind2.arg1 := ((pFind.arg1).right)) in
-  let foo5 := (pFind2.x1 := (pFind.x1)) in 
-  let foo6 := (pFind2.depth3 := ((pFind.depth3) + 1)) in 
-  if (~(this.minElementN[pFind1])) then false else (this.minElementN[pFind2]);
+  let foo3 := (pFind2.arg := ((pFind.arg).right)) in
+  let foo4 := (pFind2.x := (pFind.x)) in 
+  ((this.minElement[pFind1]) && (this.minElement[pFind2]));
  
-  boolean minElement(int xx) :=
-  let pFind := new FindParameters in
-  let foo1 := (pFind.arg1 := (this.root)) in
-  let foo2 := (pFind.x1 := xx) in
-  let foo3 := (pFind.depth3 := 0) in
-  (this.minElementN[pFind]);
+ boolean minElementB(int xx) :=
+ let pFind := new FindParameters in
+ let foo1 := (pFind.arg := (this.root)) in
+ let foo2 := (pFind.x := xx) in
+ (this.minElement[pFind]);
+  
+ boolean wellFormed(AvlNode an) :=
+  if (an = null) then true else
+  let pMax := new MaxParameters in
+  let foo1 := (pMax.lhs := (AvlTree.height[(an.left)])) in
+  let foo2 := (pMax.rhs := (AvlTree.height[(an.right)])) in 
+  if (~((AvlTree.height[an]) =  (AvlTree.max[pMax]))) then false else
+  ((this.wellFormed[(an.left)]) && (this.wellFormed[(an.right)]));
+ 
 }
+
+let t := Y0 in
+let x := X0 in
+let foo48 := (t.depthBound := 2) in
+let foo49 := (t.insertElem[x]) in
+(t.findMax[x])
+
+
+
+
+
+
+
+
+
+
+

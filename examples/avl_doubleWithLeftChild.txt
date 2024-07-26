@@ -2,7 +2,5 @@ include avl.txt
 
 let t := Y0 in
 let n := X0 in
-let r := R0 in
 let foo54 := (t.depthBound := 5) in
-let foo55 := (t.root := r) in
-(t.balanced[n])
+(t.doubleWithLeftChild[n])

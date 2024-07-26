@@ -1,0 +1,6 @@
+include avl.txt
+
+let t := Y0 in
+let p := X0 in
+let foo54 := (t.depthBound := 5) in
+(t.insert[p])
