@@ -244,13 +244,6 @@ class AvlTree extends Object {
  
 }
 
-let t := Y0 in
-let x := X0 in
-let foo48 := (t.depthBound := 2) in
-let foo49 := (t.insertElem[x]) in
-(t.findMax[x])
-
-
 
 
 
