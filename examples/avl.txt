@@ -25,6 +25,11 @@ class FindParameters extends Object {
   AvlNode arg;
 }
 
+class FindMParameters extends Object {
+  int depth4;
+  AvlNode arg2;
+}
+
 class AvlTree extends Object {
   AvlNode root;
   int depthBound;
@@ -135,6 +140,24 @@ class AvlTree extends Object {
     let foo47 := (k1.right := (this.rotateWithLeftChild[(k1.right)])) in
     (this.rotateWithRightChild[k1]);
 
+ AvlNode findMaxNode(FindMParameters p) :=
+  if ((this.depthBound) < (p.depth4)) then null else
+  if ((p.arg2) = null) then (p.arg2) else
+  if (((p.arg2).right) = null) then (p.arg2) else
+  let p2 := new FindMParameters in
+  let foo1 := (p2.depth4 := ((p.depth4) + 1)) in
+  let foo2 := (p2.arg2 := ((p.arg2).right)) in
+  (this.findMaxNode[p2]);
+
+ AvlNode findMinNode(FindMParameters p) :=
+  if ((this.depthBound) < (p.depth4)) then null else
+  if ((p.arg2) = null) then (p.arg2) else
+  if (((p.arg2).left) = null) then (p.arg2) else
+  let p2 := new FindMParameters in
+  let foo1 := (p2.depth4 := ((p.depth4) + 1)) in
+  let foo2 := (p2.arg2 := ((p.arg2).left)) in
+  (this.findMinNode[p2]);
+  
  AvlNode findMax(AvlNode t) :=
   if (t = null) then t else
   if ((t.right) = null) then t else
