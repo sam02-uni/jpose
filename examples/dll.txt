@@ -18,6 +18,17 @@ class AddBeforeParameters extends Object {
   Entry e;
 }
 
+class LastIndexOfLoopFrame extends Object {
+  Object obj1;
+  int index3;
+  Entry entry2;
+}
+
+class RemoveLoopFrame extends Object{
+  Entry entry3;
+  Object obj;
+}
+
 class SetParameters extends Object {
   int index2;
   Object element2;
@@ -35,6 +46,122 @@ class DllEntryLoopFrame extends Object {
   int idx;
 }
 
+class SetListItrParameters extends Object{
+  Entry head;
+  Object obj2;
+}
+
+class ListItrCreatorParameters{
+  DoubleLinkedList dll;
+  int index4;
+}
+
+class RealNextParameters {
+  int index5;
+  Entry next2;
+}
+
+class ListItr extends Object{
+  Entry lastReturned;
+  Entry next3;
+  int nextIndex;
+  DoubleLinkedList dll2;
+
+  Entry realNext (RealNextParameters p) :=
+    if ((this.nextIndex) < (p.index5)) then 
+      let nextTemp := (p.next2) in
+      let foo1 := (p.next2 := (nextTemp.next)) in 
+      let foo2 := (this.nextIndex := ((this.nextIndex) + 1)) in
+      (this.realNext[p])  
+    else
+      (p.next2);
+
+  Entry realNextBefore (RealNextParameters p) :=
+    if ((p.index5) < (this.nextIndex)) then 
+      let nextTemp := (p.next2) in
+      let foo1 := (p.next2 := (nextTemp.previous)) in 
+      let foo2 := (this.nextIndex := ((this.nextIndex) - 1)) in
+      (this.realNext[p])  
+    else
+      (p.next2);
+
+  ListItr creator (ListItrCreatorParameters create) :=
+    let rNext := new RealNextParameters in
+    let foo1 := (this.dll2 := (create.dll)) in
+    let foo2 := (this.nextIndex := 0) in
+    let dllTemp := (this.dll2) in
+    if ((create.index4) < 0) then null 
+    else if ((dllTemp.size) < (create.index4)) then null 
+    else if(1 < (dll.size)) then 
+      if((create.index4) < (dll.size)) then 
+        let foo3 := (this.next3 := ((dll.header).next)) in
+        let foo4 := (rNext.next2 := (this.next3)) in
+        let foo6 := (this.next3 := (this.realNext[rNext])) in
+        this 
+      else
+        null
+    else
+      let foo7 := (this.next3 := (dll.header)) in
+      let foo8 := (rNext.next2 := (this.next3)) in
+      let foo9 := (this.nextIndex := (dll.size))in
+      let foo10 := (this.next3 := (this.realNextBefore[rNext])) in
+      this;
+
+  Void add2 (Object o) :=
+    let dllTemp := (this.dll2) in
+    let foo1 := (this.lastReturned := (dllTemp.header)) in
+    let foo2 := (dllTemp.addBefore[o]) in
+    let foo3 := (this.nextIndex := ((this.nextIndex) + 1)) in
+    Void;
+
+  Void remove (Void n) :=
+    let dllTemp := (this.dll2) in
+    let last := (this.lastReturned) in
+    let foo1 := (dllTemp.remove[last]) in
+    if ((this.next3) = last) then 
+      let foo2 := (this.next3 := (last.next)) in 
+      let foo4 := (this.lastReturned := (dllTemp.header)) in 
+      Void 
+    else
+    let foo3 := (this.nextIndex := ((this.nextIndex) - 1)) in
+    let foo5 := (this.lastReturned := (dllTemp.header)) in
+    Void;
+
+  Object hasNext (int size) :=
+    if ((this.nextIndex) = size) then true else false;
+
+  Object nextObj (int size) :=
+    if ((this.nextIndex) = size) then null else
+    let foo1 := (this.lastReturned := (this.next3)) in
+    let foo2 := (this.next3 := ((this.next3).next)) in
+    let foo3 := (this.nextIndex := ((this.nextIndex) + 1)) in
+    let last := (this.lastReturned) in
+    (last.element);
+
+  Object hasPrevious (Void n) :=
+    if ((this.nextIndex) = 0) then true else false;
+
+  Object previousObj (Void n) :=
+    if((this.nextIndex) = 0) then null else
+    let foo1 := (this.next3 := ((this.next3).previous)) in
+    let foo2 := (this.lastReturned := (this.next3)) in
+    let foo3 := (this.nextIndex := ((this.nextIndex) - 1)) in
+    let last := (this.lastReturned) in
+    (last.element);
+
+  int nextIndex(Void n) :=
+    (this.nextIndex);
+
+  int previousIndex (Void n) :=
+    ((this.nextIndex) - 1);
+
+  Void set2 (SetListItrParameters s) :=
+    if ((this.lastReturned) = (s.head)) then null else
+    let last := (this.lastReturned) in
+    (last.element);
+
+}
+
 class DoubleLinkedList extends Object {
   Entry header;
   int size;
@@ -47,6 +174,34 @@ class DoubleLinkedList extends Object {
       then (pAddBefore.e := (this.header))
       else (pAddBefore.e := (this.entry[(pAdd.index)])) in
     let foo3 := (this.addBefore[pAddBefore]) in
+    new Void;
+
+  Void addFirst(Object o) := 
+    let addB := new AddBeforeParameters in
+    let foo1 := (addB.o := o) in
+    let foo2 := (addB.e := ((this.header).next)) in
+    let foo3 := (this.addBefore[addB]) in
+    new Void;
+
+  Void addLast(Object o) := 
+    let addB := new AddBeforeParameters in
+    let foo1 := (addB.o := o) in
+    let foo2 := (addB.e := (this.header)) in
+    let foo3 := (this.addBefore[addB]) in
+    new Void;
+
+  Object addBoolReturn (Object o) := 
+    let addB := new AddBeforeParameters in
+    let foo1 := (addB.o := o) in
+    let f002 := (addB.e := (this.header)) in
+    let foo3 := (this.addBefore[addB]) in
+    true;
+
+  Void doAdd (Object o) := 
+    let addParam := new AddParameters in
+    let foo1 := (addParam.elem := o) in
+    let foo2 := (addParam.index := 4) in
+    let foo3 := (this.add[addParam]) in
     new Void;
 
   Entry entry(int index) :=
@@ -98,6 +253,26 @@ class DoubleLinkedList extends Object {
     let foo1 := (this.removeE[e]) in
     objLast;
 
+  Object doRemoveObjLoop1 (RemoveLoopFrame rem) :=
+    let e := (rem.entry3) in
+    if ((e.element) = null) then let foo2 := (this.removeE[e]) in true else if ((e.next) = null) then false else
+    let foo1 := (rem.entry3 := (e.next)) in
+    (this.doRemoveObjLoop1[rem]);
+
+  Object doRemoveObjLoop2 (RemoveLoopFrame rem) :=
+    let e := (rem.entry3) in
+    if ((e.element) = (rem.obj)) then let foo2 := (this.removeE[e]) in true else if ((e.next) = null) then false else
+    let foo1 := (rem.entry3 := (e.next)) in
+    (this.doRemoveObjLoop2[rem]);
+
+  Object removeObj (Object o) :=
+    let removeParam:= new RemoveLoopFrame in
+    let e := ((this.header).next) in
+    let foo1 := (removeParam.obj := o) in
+    let foo2 := (removeParam.entry3 := e) in
+    if (o = null) then (this.doRemoveObjLoop1[removeParam]) else 
+    (this.doRemoveObjLoop2[removeParam]);
+
   Object getFirst(Void arg) :=
     if ((this.size) = 0) then null else
     let h := ((this.header).next) in 
@@ -140,4 +315,50 @@ class DoubleLinkedList extends Object {
     let foo3 := (res.index1 := 0) in
     if (o = null) then (this.doIndexOfLoop1[res]) else
     (this.doIndexOfLoop2[res]);
+
+  int doLastIndexOfLoop1 (LastIndexOfLoopFrame res) :=
+    let e := (res.entry2) in
+    if ((e.element) = null) then (res.index3) else if ((e.previous) = null) then (0 - 1) else
+    let foo1 := (res.entry2 := (e.previous)) in
+    let foo2 := (res.index3 := ((res.index3) - 1)) in
+    (this.doLastIndexOfLoop1[res]);
+
+  int doLastIndexOfLoop2 (LastIndexOfLoopFrame res) :=
+    let e := (res.entry2) in
+    if ((e.element) = (res.obj1)) then (res.index3) else if ((e.previous) = null) then (0 - 1) else
+    let foo1 := (res.entry2 := (e.previous)) in
+    let foo2 := (res.index3 := ((res.index3) - 1)) in
+    (this.doLastIndexOfLoop2[res]);
+
+  int lastIndexOf (Object o) :=
+    let res := new LastIndexOfLoopFrame in
+    let e := ((this.header).previous) in
+    let foo1 := (res.obj1 := o) in
+    let foo2 := (res. entry2 := e) in
+    let foo3 := (res.index3 := (this.size)) in
+    if (o = null) then (this.doLastIndexOfLoop1[res]) else
+    (this.doLastIndexOfLoop2[res]);
+    
+  Void clear (Void n) :=
+    let foo1 := ((this.header).next := (this.header)) in
+    let foo2 := ((this.header).previous := (this.header)) in
+    Void;
+
+  int size (Void n) :=
+    (this.size);
+
+  Object contains (Object o) :=
+    if ((this.indexOf[o]) = (0 - 1)) then false else
+    true;
+
+  ListItr listIterator (int ind) :=
+    let l := new ListItr in
+    let param := new ListItrCreatorParameters in
+    let foo1 := (param.dll := this) in
+    let foo2 := (param.index4 := ind) in
+    let foo3 := (l.lastReturned := (this.header)) in
+    let foo4 := (l.creator[param]) in
+    let foo5 := (l.dll := this) in
+    l;
+
 }

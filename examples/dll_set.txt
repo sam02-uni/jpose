@@ -1,0 +1,8 @@
+include dll.txt
+
+let l := Y0 in
+let o := Y1 in
+let p := new SetParameters in
+let foo1 := (p.index2 := 4) in
+let foo2 := (p.element2 := o) in
+(l.set[p])
